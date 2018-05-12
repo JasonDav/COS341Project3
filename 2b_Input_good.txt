@@ -1,0 +1,60 @@
+
+string out;
+num loop;
+bool payment;
+string choice;
+input(choice);
+string c;
+c = "coffee";
+
+loop = 5;
+loop = add(loop,2);
+
+if( eq(c,choice) ) then { coffee } else { tea } ;
+
+output(out);
+ for(i=0 ; i< loop ; i=add(i,1)) 
+ { input( loop );
+ } ;
+
+proc coffee {
+              out = "two rand";
+
+              output(out);
+
+              pay ;
+
+              if( payment ) then { out = "enjoy" } else { out = "error" }
+
+             }
+
+proc tea  { 
+            out = "one rand";
+            
+            output(out);
+            
+            pay ;
+            
+            if( payment ) then { out = "enjoy" } else { out = "error" } 
+          }
+
+proc pay {
+          payment = F;
+          
+          num n;
+
+          input(n);
+
+          num one;
+
+          num two;
+
+          one = 1;
+
+          two = 2;
+
+          if( or(and(eq(c,choice),
+                     eq(n,two)),
+                 and(not eq(c,choice),
+                         eq(n,one)))) then { payment = T } 
+         }

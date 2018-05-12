@@ -1,0 +1,25 @@
+num x;
+num y;
+y = 2;
+
+one;
+
+
+
+output(x);
+
+
+proc one
+{
+	output(x);
+	output (y);
+	two;
+	one;
+}
+
+proc two
+{
+	x = 5;
+	output(x);
+	one;
+}

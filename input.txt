@@ -1,0 +1,26 @@
+input(x);
+num n;
+string s;
+n = x;
+r = "unknown";
+s = "even";
+y = not a > b;
+y = not T;
+f = add(a, 2);
+checknumber;
+if( eq(r,s) )
+then { output(s) }
+else { output(r) };
+halt;
+proc checknumber{
+	m = n;
+	if ( (m<0) )
+	then {m = mult(m,-1) };
+	while( (m>0) )
+	{
+		m = sub(m,2);
+	};
+	if( eq(m,0) )
+	then { r = "even"}
+	else {r = "odd"};
+}
