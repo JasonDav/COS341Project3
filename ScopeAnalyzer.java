@@ -1,17 +1,14 @@
+import java.io.PrintWriter;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Stack;
 public class ScopeAnalyzer
 {
 	SemanticTable st;
-
-	public static void main(String[] args)
-	{
-		ScopeAnalyzer sa = new ScopeAnalyzer(Parser.st);
-	}
+	PrintWriter writer;
+	String prunedTree;
 
 	ParseNode root;
 	public ScopeAnalyzer(SemanticTable semtable)
@@ -25,6 +22,13 @@ public class ScopeAnalyzer
 		System.out.println("\n\n\n");
 		st.scopeTable();
 		// st.printTable(false);
+		try {
+			writer = new PrintWriter(new File("AST.txt"));
+			writer.write(prunedTree);
+			writer.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public ParseNode getParseNodeFromString(String line)
@@ -40,6 +44,7 @@ public class ScopeAnalyzer
 		temp = new ParseNode(NodeType.valueOf(tokens[0]),tokens[1]);
 		temp.tabs = tabs;
 
+		prunedTree+=temp.printWithTabs()+"\n";
 		return temp;
 	}
 
