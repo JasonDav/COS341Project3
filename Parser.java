@@ -48,7 +48,7 @@ public class Parser
 		currentPos = 0;
 		Scanner sc;
 		try{
-			sc = new Scanner(new File(fileName));			
+			sc = new Scanner(new File(fileName));
 
 			fileString = sc.useDelimiter("\\Z").next(); //scan entire file
 
@@ -140,11 +140,11 @@ public class Parser
 		prunedTree+=prunedTabsStr+currentNode.printPruned()+"\n";
 	}
 
-	public void printToFile()
+	private void printToFile()
 	{
 		try{
 			PrintWriter writer = new PrintWriter("temp.txt");
-			String output= "";
+			StringBuilder output= new StringBuilder();
 
 			ParseNode temp = currentNode;
 			boolean cont = true;
@@ -154,14 +154,11 @@ public class Parser
 			while(!queue.isEmpty())
 			{
 				temp = queue.remove();
-				output += temp.toString() + "\n";
-				for(ParseNode n : temp.children)
-				{
-					queue.add(n);
-				}
+				output.append(temp.toString()).append("\n");
+				queue.addAll(temp.children);
 			}
 
-			writer.write(output);
+			writer.write(output.toString());
 
 			writer.close();
 		}
@@ -191,7 +188,7 @@ public class Parser
 		tabs++;
 		prunedTabs++;
 
-		//@todo check what type of variable var is
+
 		if(next.type == Lexer.TokenType.STR)
 		{
 			//var is string
@@ -321,41 +318,42 @@ public class Parser
 
 		currentNode = currentNode.addChild(new ParseNode(NodeType.CALC));
 
-		if(next.data.equals("add"))//which is next?
-		{
-			currentNode.data="+";
-			printNodeToPrunedTree();
-			match("add");
-			//next is an add operation
-			match("(");
-			parseNUMEXPR();
-			match(",");
-			parseNUMEXPR();
-			match(")");
-		}
-		else if(next.data.equals("sub"))
-		{
-			currentNode.data="-";
-			printNodeToPrunedTree();
-			match("sub");
-			//next is a sub operation
-			match("(");
-			parseNUMEXPR();
-			match(",");
-			parseNUMEXPR();
-			match(")");
-		}
-		else if(next.data.equals("mult"))
-		{
-			currentNode.data="*";
-			printNodeToPrunedTree();
-			match("mult");
-			//next is a mult operation
-			match("(");
-			parseNUMEXPR();
-			match(",");
-			parseNUMEXPR();
-			match(")");
+		switch (next.data) {
+			case "add":
+//which is next?
+
+				currentNode.data = "+";
+				printNodeToPrunedTree();
+				match("add");
+				//next is an add operation
+				match("(");
+				parseNUMEXPR();
+				match(",");
+				parseNUMEXPR();
+				match(")");
+				break;
+			case "sub":
+				currentNode.data = "-";
+				printNodeToPrunedTree();
+				match("sub");
+				//next is a sub operation
+				match("(");
+				parseNUMEXPR();
+				match(",");
+				parseNUMEXPR();
+				match(")");
+				break;
+			case "mult":
+				currentNode.data = "*";
+				printNodeToPrunedTree();
+				match("mult");
+				//next is a mult operation
+				match("(");
+				parseNUMEXPR();
+				match(",");
+				parseNUMEXPR();
+				match(")");
+				break;
 		}
 
 		//printNode();
@@ -520,48 +518,47 @@ public class Parser
 		{
 			ParseNode temp = parseVARwithoutPrint();
 			ParseNode tempCurrent = currentNode;
-			if(next.data.equals("<"))
-			{
-				currentNode.data = "<";
-				printNodeToPrunedTree();
+			switch (next.data) {
+				case "<":
+					currentNode.data = "<";
+					printNodeToPrunedTree();
 
-				tabs++;
-				prunedTabs++;
+					tabs++;
+					prunedTabs++;
 
-				currentNode = temp;
-				printNodeToPrunedTree();
-				currentNode = tempCurrent;
+					currentNode = temp;
+					printNodeToPrunedTree();
+					currentNode = tempCurrent;
 
-				tabs--;
-				prunedTabs--;
+					tabs--;
+					prunedTabs--;
 
-				match("<");
-				parseVAR();
-			}
-			else if(next.data.equals(">"))
-			{
-				currentNode.data = ">";
-				printNodeToPrunedTree();
+					match("<");
+					parseVAR();
+					break;
+				case ">":
+					currentNode.data = ">";
+					printNodeToPrunedTree();
 
-				tabs++;
-				prunedTabs++;
+					tabs++;
+					prunedTabs++;
 
-				currentNode = temp;
-				printNodeToPrunedTree();
-				currentNode = tempCurrent;
+					currentNode = temp;
+					printNodeToPrunedTree();
+					currentNode = tempCurrent;
 
-				tabs--;
-				prunedTabs--;
+					tabs--;
+					prunedTabs--;
 
-				match(">");
-				parseVAR();
-			}
-			else
-			{
-				currentNode.data = next.data;
-				currentNode = temp;
-				printNodeToPrunedTree();
-				currentNode = tempCurrent;
+					match(">");
+					parseVAR();
+					break;
+				default:
+					currentNode.data = next.data;
+					currentNode = temp;
+					printNodeToPrunedTree();
+					currentNode = tempCurrent;
+					break;
 			}
 		}
 		else if(next.type == Lexer.TokenType.TRUTH)

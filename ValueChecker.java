@@ -195,26 +195,75 @@ public class ValueChecker
 				// output += "\n\t"+valueCheck(n);
 
 
-				// 	continue; //other var is not updated in the THEN branch		
-
-
-				if(node.data.equals("else") && n.type == NodeType.ASSIGN)
+				// 	continue; //other var is not updated in the THEN branch
+				if(node.data.equals("then"))
 				{
-					ass = st.getEntry(n.num);
+					if(n.type==NodeType.NAME)
+					{
+						ParseNode proc = st.getVarDecleration(n).node;
+						if(st.getEntry(proc.num).hv==null)
+						for(ParseNode tn: proc.children) {
+							tn.thenBranch = node;
+						}
+					}
 
-					updateVar = st.getEntry(n.children.get(0).num).getLatest();
+					n.thenBranch = node;
 
 					output += "\n\t"+valueCheck(n);
 
-					//check if has got a value from the THEN branch - parent.parent == IF
-					//if var is in both then and else it has a value in the depth-1 of the else
-					if(updateVar.node.parent.parent.parent == ass.node.parent.parent && updateVar.node.parent.parent.data.equals("then"))
+					continue;
+				}
+
+				//if in else branch - and see an assign or input - check if this happens in then branch - if yes update
+				if(node.data.equals("else"))
+				{
+					if(n.type == NodeType.ASSIGN || (n.type == NodeType.IO && n.data.contains("i")))
 					{
-						// ass.hv = HasValue.YES;
-						// declVar.latestUpdateNum = var.t_id;
-						st.getEntry(n.children.get(0).num).valueDepth-=1;
-						// ass.update();
-						output+="VAR ("+ass.name+", "+n.data+") is present in both sides of the condition -> "+ass.hv; 
+						ass = st.getEntry(n.num);
+
+						updateVar = st.getEntry(n.children.get(0).num).getLatest();
+
+						output += "\n\t"+valueCheck(n);
+
+						//check if has got a value from the THEN branch - parent.parent == IF
+						//if var is in both then and else it has a value in the depth-1 of the else
+						if(updateVar.node.parent.parent.parent == ass.node.parent.parent && updateVar.node.parent.parent.data.equals("then"))
+						{
+							// ass.hv = HasValue.YES;
+							// declVar.latestUpdateNum = var.t_id;
+							st.getEntry(n.children.get(0).num).valueDepth-=1;
+							// ass.update();
+							output+="VAR ("+ass.name+", "+n.data+") is present in both sides of the condition -> "+ass.hv;
+						}
+					}
+					else if(n.type == NodeType.NAME)
+					{
+						output+=valueCheck((n));
+						ParseNode proc = st.getVarDecleration(n).node;
+
+						//go through then branch looking for any input matches with variables in this else branch
+						for (ParseNode pn: proc.children)
+						{
+							if(pn.type == NodeType.ASSIGN || (pn.type == NodeType.IO && pn.data.contains("i")))
+							{
+								ass = st.getEntry(pn.num);
+
+								updateVar = st.getEntry(pn.children.get(0).num).getLatestNotThis();
+
+								//check if has got a value from the THEN branch - parent.parent == IF
+								//if var is in both then and else it has a value in the depth-1 of the else
+								if(updateVar!=null && updateVar.node.parent.thenBranch!=null && updateVar.node.parent.thenBranch.parent == node.parent)
+								{
+									// ass.hv = HasValue.YES;
+									// declVar.latestUpdateNum = var.t_id;
+									st.getEntry(pn.children.get(0).num).valueDepth-=1;
+//									 ass.update();
+									st.getEntry(pn.children.get(0).num).update();
+
+									output+="VAR ("+ass.name+", "+n.data+") is present in both sides of the condition -> "+ass.hv;
+								}
+							}
+						}
 					}
 				}
 				else
@@ -243,6 +292,7 @@ public class ValueChecker
 			//input means var gets a value!
 			// st.getEntry(var.num).hv = thv;
 			child.hv = HasValue.YES;
+
 			child.valueDepth = currentDepth;
 
 			// st.getEntry(te.decl_id).latestUpdateNum = child.t_id;
@@ -258,7 +308,8 @@ public class ValueChecker
 			output+= "Output at: "+node.num;
 			output+= " -> "+checkVar(var);
 
-			if(child.hv == HasValue.NO)
+			if(child.getLatestValid(currentDepth).hv == HasValue.NO)
+//			if(child.hv == HasValue.NO)
 			{
 				output+=" -> Error: output requires a var with a value!";
 			}
@@ -267,6 +318,8 @@ public class ValueChecker
 
 			st.getEntry(node.num).hv = child.hv;
 		}
+
+		st.getEntry(node.num).hv = child.hv;
 		return output;
 	}
 
@@ -384,10 +437,10 @@ public class ValueChecker
 		String output = "\n--------\nPROC at "+node.num+":    ("+node.data+")\n";
 		//jump to proc
 
-		if(st.getEntry(node.num).hv!=null)
+		if(st.getVarDecleration(node).hv!=null)
 			return "";
 		else
-			st.getEntry(node.num).hv = HasValue.PROC;
+			st.getVarDecleration(node).hv=HasValue.PROC;
 
 		System.out.println("inside PROC " + node.data);
 		ParseNode procNode = st.getVarDecleration(node).node;

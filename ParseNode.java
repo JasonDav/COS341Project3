@@ -12,6 +12,7 @@ public class ParseNode
 	int tabs;
 	LinkedList<Integer> scopes;
 	boolean hasValue = false;
+	ParseNode thenBranch = null;
 
 	public ParseNode(NodeType type)
 	{

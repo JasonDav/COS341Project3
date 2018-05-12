@@ -466,6 +466,17 @@ public class SemanticTable
 
 			return input+tabsString;
 		}
+
+		public TableEntry getLatestNotThis() {
+			if(this.decl_id!=null)
+				if(getEntry(decl_id).updatedVars.getLast()==this)
+					if(getEntry(decl_id).updatedVars.size()>1)
+						return getEntry(decl_id).updatedVars.get(getEntry(decl_id).updatedVars.size()-2);
+				else
+					return getEntry(decl_id).updatedVars.getLast();
+
+			return null;
+		}
 	}
 
 }
