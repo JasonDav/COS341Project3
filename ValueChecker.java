@@ -15,6 +15,7 @@ public class ValueChecker
 		printTable();
 		printSummary();
 		printTree(onlyNo);
+		st.writeToFile();
 	}
 
 	Stack<ParseNode> stack = new Stack<ParseNode>();

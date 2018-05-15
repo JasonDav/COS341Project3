@@ -41,6 +41,8 @@ public class Parser
 			onlyNo = (args[1].equals("--no"));
 
 		ValueChecker vc = new ValueChecker(sa.st,sa.root,onlyNo);
+
+		CodeGenerator cg = new CodeGenerator(sa.st);
 	}
 
 	public Parser(String fileName)

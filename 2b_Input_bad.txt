@@ -11,9 +11,9 @@ one = "one" ;
 one = and(T,F) ;
 
 if ( eq(one,one) )
-   then 
-        { one = mult(one,fun) ; fun ; fun = "joke" } 
-   else 
+   then
+        { one = mult(one,fun) ; fun ; fun = "joke" }
+   else
         { fun = "null"; one = or(one,one) ; fun = add(fun,one) ; fun } ;
 
 one = fun ;
@@ -32,7 +32,7 @@ proc fun {
 
       fun = mult(fun,one) ;
 
-      if ( fun ) then { fun = T; fun ; fun = one ; one = or(F,fun) } ; 
+      if ( fun ) then { fun = T; fun ; fun = one ; one = or(F,fun) } ;
 
       fun = "hello" ;
 

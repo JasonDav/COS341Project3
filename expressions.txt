@@ -1,0 +1,42 @@
+---overview---
+
+input(x) -> INPUT;V0(x.type)     --- for string we use V0$ , NUM = V0(I), BOOL = V0(I) 0 or 1
+output(x) -> PRINT V0            --- string = V0$, NUM = V0 , BOOL = V0
+
+eq(x,y) -> expr1 = expr2
+not x -> NOT V0
+and(x,y) -> expr1 AND expr2
+or(x,y) -> expr1 OR expr2
+
+v1 = expr -> LET V0 = val        --- strings = "val"
+
+sub(x,y) -> expr1 - expr2
+add(x,y) -> expr1 + expr2
+mult(x,y) -> expr1 * expr2
+
+halt -> END
+
+IF expr THEN GOTO true
+GOTO false
+
+
+50 IF NOT THEN GOTO 80      --GOTO ELSESTART
+60 LET v0 = v1
+70 GOTO 90                  --GOTO ENDOFIF
+80 LET v1 = v0
+90 PRINT v1
+
+
+while(x>y)
+{
+    do
+}
+
+if( !(x>y) ) then GOTO endOFLoop
+do
+do
+do
+GOTO startofLoop
+
+
+

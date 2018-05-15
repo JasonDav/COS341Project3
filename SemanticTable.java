@@ -1,3 +1,4 @@
+import java.io.PrintWriter;
 import java.util.LinkedList;
 public class SemanticTable
 {
@@ -204,12 +205,30 @@ public class SemanticTable
 			return null;
 	}
 
+	public void writeToFile()
+	{
+		try{
+			PrintWriter writer = new PrintWriter("symbolTable.txt");
+			String output = "";
+			for (TableEntry te: entries)
+				output = te.toString()+"\n";
+
+			writer.write(output);
+			writer.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 	public class TableEntry
 	{
 		String name;//proc or var names 
 		int nodeID;
 		LinkedList<Integer> scopes;
 		Integer decl_id = null; //id of entry that declares this entry
+		boolean declaredInIntermediate = false;
 		int t_id;
 		ParseNode node;
 		String decl_entry = null;//name (v1) of the entry
@@ -477,6 +496,8 @@ public class SemanticTable
 
 			return null;
 		}
+
+
 	}
 
 }

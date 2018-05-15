@@ -1,34 +1,17 @@
 
 num x;
 num y;
-num z;
+num o;
 
-input(y);
+input(x);
+y = 0;
 
-num null;
-null = 0;
-
-if( (y > null) )then { ping } else { pong } ;
+while(x>y)
+{
+    y=add(y,1);
+    output(y)
+}
 
 output(x);
-output(z);
-
-halt;
-
-proc pong
-{
- num x;
- input(x);
- if (eq(x,y)) then{ ping ; input(z) } ;
- y = sub(y,x);
- output(y)
-}
-
-proc ping
-{
- num z;
- input(z);
- if (eq(y,z)) then{ pong ; input(x) } ;
- y = add(y,z);
- output(y)
-}
+output(y);
+halt
